@@ -1,6 +1,8 @@
 import SensorTime from "./SensorTime.js"
 import CalcChecksum from "./parseChecksum.js";
 import SensorBrakePressure from "./SensorBrakePressure.js";
+import SensorMarker from "./SensorMarker.js"
+import SensorMPU6050 from "./SensorMPU6050.js";
 
 const STATE_SEARCH_MAGIC_1 = 0;
 const STATE_SEARCH_MAGIC_2 = 1;
@@ -14,7 +16,7 @@ const MAGIC_2 = 0x0F;
 
 //0x42, 0x0F, LEN, LEN ...... CHECK, CHECK;
 export default class ParseManager {
-    static SENSOR_TYPES = [SensorTime, SensorBrakePressure];
+    static SENSOR_TYPES = [SensorTime, SensorBrakePressure, SensorMarker, SensorMPU6050];
 
     constructor(onParse) {
         this.onParse = onParse;
@@ -40,6 +42,7 @@ export default class ParseManager {
         switch (this.state) {
             case STATE_SEARCH_MAGIC_1:
                 if (b === MAGIC_1) this.state = STATE_SEARCH_MAGIC_2;
+                else console.log("MAGIC BYTE DESYNC - CORRUPT OR MISSING BYTES?")
                 break;
 
             case STATE_SEARCH_MAGIC_2:

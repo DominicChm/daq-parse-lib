@@ -1,17 +1,17 @@
 import Sensor from "./Sensor.js";
 
-export default class SensorTime extends Sensor {
+export default class SensorMarker extends Sensor {
     static getId() {
-        return 0x01;
+        return 0x03;
     }
 
     static getDataLength() {
-        return 0x04;
+        return 0x01;
     }
 
     static parse(ArrayBuffer) {
         return {
-            time: new DataView(ArrayBuffer).getUint32(0, true)
+            marker: new DataView(ArrayBuffer).getUint8(0)
         };
     }
 
