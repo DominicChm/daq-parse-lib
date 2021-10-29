@@ -1,0 +1,33 @@
+{
+    "Brake Pressure": {
+        "bpFront": "Brake Pressure (Front)",
+        "bpBack": "Brake Pressure (Back)"
+    },
+    "Marker": {
+        "marker": "Timer Marker"
+    },
+    "MPU6060": {
+        "rawAccelX": "Raw X",
+        "rawAccelY": "Raw Y",
+        "rawAccelZ": "Raw Z",
+        "rawGyroX": "Raw Gyro X",
+        "rawGyroY": "Raw Gyro Y",
+        "rawGyroZ": "Raw Gyro Z",
+        "quaternionX": "Quaternion X",
+        "quaternionY": "Quaternion X",
+        "quaternionZ": "Quaternion Y",
+        "quaternionW": "Quaternion W",
+        "linearAccelX": "Linear Acceleration X",
+        "linearAccelY": "Linear Acceleration Y",
+        "linearAccelZ": "Linear Acceleration Z",
+        "yaw": "Yaw",
+        "pitch": "Pitch",
+        "roll": "Roll",
+        "gravityX": "Gravity X",
+        "gravityY": "Gravity Y"
+    },
+    "Time": {
+        "time": "Time"
+    }
+
+}
