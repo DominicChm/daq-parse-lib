@@ -7,7 +7,7 @@ const pm = new ParseManager((data) => {
     readings.push(data);
 });
 
-const data = fs.readFileSync("./D5.bin", {encoding: null});
+const data = fs.readFileSync("./D12.bin", {encoding: null});
 pm.feedArrayBuffer(data);
 
 
