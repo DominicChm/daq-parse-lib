@@ -1,15 +1,15 @@
-import Sensor from "./Sensor.js";
+import Module from "../Module.js";
 
-export default class SensorMPU6050 extends Sensor {
-    static getId() {
-        return 0x06;
+export default class SensorMPU6050 extends Module {
+    static getTypeName() {
+        return "mpu6050";
     }
 
     static getDataLength() {
         return 2 * 6 + 4 * 4;
     }
 
-    static parse(ArrayBuffer) {
+    parse(ArrayBuffer) {
         let o = 0;
         const i16 = () => new DataView(ArrayBuffer).getInt16((o += 2) - 2, true);
         const f32 = () => new DataView(ArrayBuffer).getFloat32((o += 4) - 4, true);

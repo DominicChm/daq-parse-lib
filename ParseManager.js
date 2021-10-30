@@ -1,8 +1,8 @@
-import SensorTime from "./SensorTime.js"
+import SensorTime from "./moduleTypes/SensorTime.js"
 import CalcChecksum from "./parseChecksum.js";
-import SensorBrakePressure from "./SensorBrakePressure.js";
-import SensorMarker from "./SensorMarker.js"
-import SensorMPU6050 from "./SensorMPU6050.js";
+import SensorBrakePressure from "./moduleTypes/SensorBrakePressure.js";
+import SensorMarker from "./moduleTypes/SensorMarker.js"
+import SensorMPU6050 from "./moduleTypes/SensorMPU6050.js";
 
 const STATE_SEARCH_MAGIC_1 = 0;
 const STATE_SEARCH_MAGIC_2 = 1;
@@ -18,7 +18,10 @@ const MAGIC_2 = 0x0F;
 export default class ParseManager {
     static SENSOR_TYPES = [SensorTime, SensorBrakePressure, SensorMarker, SensorMPU6050];
 
-    constructor(onParse) {
+    constructor(onParse, vehicleConfig) {
+        if (!vehicleConfig)
+            throw new Error("No vehicle config passed.");
+        this.cfg = vehicleConfig;
         this.onParse = onParse;
         this.littleEndian = true;
         this.packet = [];
@@ -33,8 +36,16 @@ export default class ParseManager {
         this.packetData = {};
 
         this.idSensorMap = {};
-        for (const sensor of ParseManager.SENSOR_TYPES) {
-            this.idSensorMap[sensor.getId()] = sensor;
+        for (const moduleConfig of vehicleConfig.modules) {
+            if (this.idSensorMap[moduleConfig.id])
+                throw new Error(`Duplicate module ID ${moduleConfig.id}`);
+
+            const moduleClass = ParseManager.SENSOR_TYPES.find(m => m.getTypeName() === moduleConfig.type);
+
+            if (!moduleClass)
+                throw new Error(`Module type ${moduleConfig.type} not found`);
+
+            this.idSensorMap[moduleConfig.id] = new moduleClass(moduleConfig);
         }
     }
 
@@ -52,6 +63,8 @@ export default class ParseManager {
                 }
                 //Got magic byte 2, start parsing this packet.
                 this.state = STATE_PARSE_LENGTH;
+
+                //Init different buffers
                 this.packet = [];
                 this.crc = [];
                 this.subpacket = [];
@@ -86,17 +99,16 @@ export default class ParseManager {
                 this.subpacket = [];
                 break;
 
-            case
-            STATE_PARSE_SUBPACKET:
+            case STATE_PARSE_SUBPACKET:
                 this.subpacket.push(b);
                 this.packetDataBuf.push(b);
 
-                if (this.subpacket.length < this.subpacketType.getDataLength()) break;
+                if (this.subpacket.length < this.subpacketType.constructor.getDataLength()) break;
 
                 //Have full sub packet
                 let subPacketData = this.subpacketType.parse(new Uint8Array(this.subpacket).buffer);
 
-                this.packetData = {...this.packetData, ...subPacketData};
+                this.packetData[this.subpacketType.getName()] = subPacketData;
 
                 if (this.packetDataBuf.length >= this.len)
                     this.state = STATE_PARSE_CRC;
@@ -160,3 +172,4 @@ int main()
 }
 
  */
+
