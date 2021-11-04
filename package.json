@@ -12,6 +12,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "chalk": "^4.1.2",
+    "meow": "^10.1.1",
     "papaparse": "^5.3.1"
   }
 }
